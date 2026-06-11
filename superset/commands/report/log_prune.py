@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 import logging
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -24,6 +24,7 @@ from superset.commands.base import BaseCommand
 from superset.commands.report.exceptions import ReportSchedulePruneLogError
 from superset.daos.report import ReportScheduleDAO
 from superset.reports.models import ReportSchedule
+from superset.utils.dates import datetime_utc_now
 from superset.utils.decorators import transaction
 
 logger = logging.getLogger(__name__)
@@ -41,7 +42,7 @@ class AsyncPruneReportScheduleLogCommand(BaseCommand):
 
         for report_schedule in db.session.query(ReportSchedule).all():
             if report_schedule.log_retention is not None:
-                from_date = datetime.utcnow() - timedelta(
+                from_date = datetime_utc_now() - timedelta(
                     days=report_schedule.log_retention
                 )
                 try:

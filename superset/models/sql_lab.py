@@ -82,6 +82,7 @@ from superset.utils.core import (
     QueryStatus,
     user_label,
 )
+from superset.utils.dates import datetime_utc_now
 
 if TYPE_CHECKING:
     from superset.connectors.sqla.models import TableColumn
@@ -170,7 +171,7 @@ class Query(
     tracking_url_raw = Column(Text, name="tracking_url")
 
     changed_on = Column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=True
+        DateTime, default=datetime_utc_now, onupdate=datetime_utc_now, nullable=True
     )
 
     @hybrid_property
@@ -519,7 +520,7 @@ class SavedQuery(
 
     @property
     def pop_tab_link(self) -> Markup:
-        return Markup(
+        return Markup(  # noqa: S704
             f"""
             <a href="/sqllab?savedQueryId={self.id}">
                 <i class="fa fa-link"></i>
