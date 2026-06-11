@@ -14,11 +14,21 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-from datetime import datetime
+from datetime import datetime, timezone
 
 import pytz
 
 EPOCH = datetime(1970, 1, 1)
+
+
+def datetime_utc_now() -> datetime:
+    """Return the current naive UTC datetime.
+
+    Replacement for the deprecated ``datetime.utcnow()`` that works on
+    Python 3.12+.  The result is timezone-naive so that it stays compatible
+    with existing naive-UTC columns stored by SQLAlchemy.
+    """
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 def datetime_to_epoch(dttm: datetime) -> float:
@@ -31,4 +41,4 @@ def datetime_to_epoch(dttm: datetime) -> float:
 
 
 def now_as_float() -> float:
-    return datetime_to_epoch(datetime.utcnow())
+    return datetime_to_epoch(datetime_utc_now())
